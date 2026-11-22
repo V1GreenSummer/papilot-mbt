@@ -1,0 +1,56 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/journal"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+#derive(Eq, @debug.Debug)
+pub(all) enum Decision {
+  Accepted
+  Rejected
+  Commented(String)
+}
+pub fn Decision::comment(Self) -> String?
+pub fn Decision::equal(Self, Self) -> Bool
+pub fn Decision::not_equal(Self, Self) -> Bool
+pub fn Decision::to_json(Self) -> @json.Json
+pub fn Decision::to_repr(Self) -> @debug.Repr
+pub fn Decision::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub(all) enum Entry {
+  TaskCreated(String, String)
+  RoundPublished(String, Int32, Int32)
+  Deciding(String, Int32, Int32, Decision)
+  Decided(String, Int32, Int32, Decision)
+  Undone(String, Int32, Int32)
+}
+pub fn Entry::equal(Self, Self) -> Bool
+pub fn Entry::from_json(@json.Json) -> Self?
+pub fn Entry::not_equal(Self, Self) -> Bool
+pub fn Entry::task(Self) -> String
+pub fn Entry::to_json(Self) -> @json.Json
+pub fn Entry::to_repr(Self) -> @debug.Repr
+pub fn Entry::to_string(Self) -> String
+
+pub struct Journal {
+  path : String
+}
+pub async fn Journal::append(Self, Entry) -> Bool
+pub async fn Journal::decision_of(Self, String, Int32, Int32) -> Decision?
+pub async fn Journal::decisions_of(Self, String) -> Array[(Int32, Int32, Decision)]
+pub fn Journal::new(String) -> Self
+pub fn Journal::path(Self) -> String
+pub async fn Journal::read(Self) -> Array[Entry]
+pub async fn Journal::unfinished(Self) -> Array[(String, Int32, Int32, Decision)]
+
+// Type aliases
+
+// Traits

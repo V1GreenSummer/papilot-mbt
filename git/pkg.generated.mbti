@@ -1,0 +1,54 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/git"
+
+// Values
+pub async fn add_worktree(String, String, String) -> Output
+
+pub fn branch_of(String) -> String
+
+pub async fn changed_files(String, String) -> Array[String]
+
+pub async fn diff_lines(String, String, String) -> Array[String]
+
+pub async fn git(String, Array[String], index? : String) -> Output
+
+pub async fn head(String) -> String?
+
+pub async fn is_repository(String) -> Bool
+
+pub async fn merge_file(String, String, String, String) -> Bool
+
+pub async fn merge_files(String, String, String) -> String?
+
+pub async fn remove_worktree(String, String, String) -> Output
+
+pub async fn repo_root(String) -> String?
+
+pub async fn rev_parse(String, String) -> String?
+
+pub async fn show_file(String, String, String) -> String?
+
+pub async fn snapshot(String, String, String) -> Snapshot?
+
+pub async fn worktrees(String) -> Array[String]
+
+// Errors
+
+// Types and methods
+pub struct Output {
+  code : Int32
+  stdout : String
+  stderr : String
+}
+pub fn Output::ok(Self) -> Bool
+pub fn Output::text(Self) -> String
+pub fn Output::to_string(Self) -> String
+
+pub struct Snapshot {
+  commit : String
+  tree : String
+}
+
+// Type aliases
+
+// Traits

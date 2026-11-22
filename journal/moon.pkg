@@ -1,0 +1,7 @@
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+  "V1GreenSummer/papilot/jsonx",
+  "moonbitlang/core/encoding/utf8",
+}

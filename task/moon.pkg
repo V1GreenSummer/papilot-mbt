@@ -1,0 +1,24 @@
+import {
+  "V1GreenSummer/papilot/jsonx",
+  "V1GreenSummer/papilot/journal",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/compress/gzip",
+  "moonbitlang/async/fs",
+  "V1GreenSummer/papilot/pdftext",
+  "V1GreenSummer/papilot/build",
+  "V1GreenSummer/papilot/compare",
+  "moonbitlang/core/debug",
+  "V1GreenSummer/papilot/git",
+  "moonbitlang/core/string" @strconv,
+  "V1GreenSummer/papilot/synctex",
+}
+
+import {
+  "V1GreenSummer/papilot/journal",
+  "V1GreenSummer/papilot/git",
+  "moonbitlang/core/env",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/process",
+  "moonbitlang/core/encoding/utf8",
+} for "test"

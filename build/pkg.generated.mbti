@@ -1,0 +1,40 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/build"
+
+// Values
+pub fn cache_key(BuildSettings, String) -> String
+
+pub async fn compile(BuildSettings) -> BuildResult
+
+pub async fn copy_tree(String, String) -> Unit
+
+pub fn engine_for(String) -> String
+
+pub async fn remove_tree(String) -> Unit
+
+pub fn source_date_epoch() -> Int64
+
+// Errors
+
+// Types and methods
+pub struct BuildResult {
+  code : Int32
+  expected_pdf : String
+  pdf : String?
+  synctex : String?
+  log : String
+}
+pub fn BuildResult::ok(Self) -> Bool
+
+pub struct BuildSettings {
+  main : String
+  compiler : String
+  engine : String
+  source_dir : String
+  work_dir : String
+}
+pub fn BuildSettings::new(String, String, String, String, compiler? : String) -> Self
+
+// Type aliases
+
+// Traits

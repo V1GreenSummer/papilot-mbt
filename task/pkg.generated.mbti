@@ -1,0 +1,151 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/task"
+
+import {
+  "V1GreenSummer/papilot/compare",
+  "V1GreenSummer/papilot/journal",
+  "V1GreenSummer/papilot/synctex",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub async fn accept(Task, SourceEdit) -> Bool
+
+pub fn apply_edit(String, SourceEdit, Bool) -> String
+
+pub fn basename(String) -> String
+
+pub fn branch_of(String) -> String
+
+pub async fn carry_decisions(@journal.Journal, String, Round, Round?) -> Round
+
+pub fn continues(@compare.Change, @compare.Change) -> Bool
+
+pub async fn create(String, String, String, String, String, String) -> Task?
+
+pub fn edit_of(Array[SourceEdit], @synctex.SynctexFile, @compare.Change) -> SourceEdit?
+
+pub fn edit_of_change(Array[SourceEdit], @synctex.SynctexFile, @compare.Change) -> (Int32?, @synctex.SourceLocation?)
+
+pub async fn edits_between(String, String, String) -> Array[SourceEdit]
+
+pub async fn edits_of(Task) -> Array[SourceEdit]
+
+pub async fn edits_of_file(String, String, String, String) -> Array[SourceEdit]
+
+pub fn index_of_edit(Array[SourceEdit], @synctex.SynctexFile, @compare.Change) -> Int32?
+
+pub async fn merge(String, String, String) -> String?
+
+pub fn parse_unified_diff(String) -> Array[SourceEdit]
+
+pub async fn publish(Task, Int32, String, compiler? : String) -> Result[PublishResult, PublishError]
+
+pub async fn read_file(String) -> String?
+
+pub async fn reject(Task, SourceEdit) -> Bool
+
+pub fn replace_lines(String, Int32, Int32, String) -> String
+
+pub fn same_file(String, String) -> Bool
+
+pub fn split_lines(String) -> Array[String]
+
+pub async fn undo_accept(Task, SourceEdit) -> Bool
+
+pub async fn undo_reject(Task, SourceEdit) -> Bool
+
+pub fn worktree_of(String, String) -> String
+
+pub async fn write_file(String, String) -> Bool
+
+// Errors
+
+// Types and methods
+#derive(Eq, @debug.Debug)
+pub(all) enum PublishError {
+  AcceptedBuildFailed(String)
+  ProposalBuildFailed(String)
+  NoAcceptedPdf
+  NoProposalPdf
+  CannotReadAccepted
+  CannotReadProposal
+  CannotReadSynctex
+}
+pub fn PublishError::equal(Self, Self) -> Bool
+pub fn PublishError::not_equal(Self, Self) -> Bool
+pub fn PublishError::to_repr(Self) -> @debug.Repr
+pub fn PublishError::to_string(Self) -> String
+
+pub struct PublishResult {
+  round : Round
+  log : String
+}
+
+pub struct Round {
+  number : Int32
+  changes : Array[TaskChange]
+  edits : Array[SourceEdit]
+}
+pub fn Round::from_json(@json.Json) -> Self?
+pub fn Round::new(Int32, Array[TaskChange], Array[SourceEdit]) -> Self
+pub fn Round::to_json(Self) -> @json.Json
+pub fn Round::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct SourceEdit {
+  file : String
+  base_start : Int32
+  base_len : Int32
+  new_start : Int32
+  new_len : Int32
+  old_text : String
+  new_text : String
+}
+pub fn SourceEdit::base_end(Self) -> Int32
+pub fn SourceEdit::covers(Self, String, Int32) -> Bool
+pub fn SourceEdit::covers_new(Self, String, Int32) -> Bool
+pub fn SourceEdit::equal(Self, Self) -> Bool
+pub fn SourceEdit::line_of(Self, String, Int32) -> Int32?
+pub fn SourceEdit::new(String, Int32, Int32, Int32, Int32, String, String) -> Self
+pub fn SourceEdit::not_equal(Self, Self) -> Bool
+pub fn SourceEdit::to_repr(Self) -> @debug.Repr
+pub fn SourceEdit::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct Task {
+  id : String
+  repo : String
+  worktree : String
+  branch : String
+  base : String
+  main : String
+  engine : String
+  source_dir : String
+}
+pub fn Task::equal(Self, Self) -> Bool
+pub fn Task::from_json(@json.Json) -> Self?
+pub fn Task::new(String, String, String, String, String, String, String) -> Self
+pub fn Task::not_equal(Self, Self) -> Bool
+pub fn Task::to_json(Self) -> @json.Json
+pub fn Task::to_repr(Self) -> @debug.Repr
+pub fn Task::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct TaskChange {
+  change : @compare.Change
+  edit : Int32?
+  source : @synctex.SourceLocation?
+  decision : @journal.Decision?
+}
+pub fn TaskChange::equal(Self, Self) -> Bool
+pub fn TaskChange::from_json(@json.Json) -> Self?
+pub fn TaskChange::not_equal(Self, Self) -> Bool
+pub fn TaskChange::to_json(Self) -> @json.Json
+pub fn TaskChange::to_repr(Self) -> @debug.Repr
+pub fn TaskChange::to_string(Self) -> String
+
+// Type aliases
+
+// Traits

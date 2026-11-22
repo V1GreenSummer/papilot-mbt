@@ -1,0 +1,13 @@
+import {
+  "moonbitlang/async/fs",
+  "moonbitlang/async/io",
+  "moonbitlang/async/process",
+  "moonbitlang/core/encoding/utf8",
+}
+
+import {
+  "V1GreenSummer/papilot/task",
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/process",
+} for "test"
