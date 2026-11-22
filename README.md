@@ -1,4 +1,6 @@
 # Papilot for MoonBit
+[![CI](https://github.com/V1GreenSummer/papilot-mbt/actions/workflows/ci.yml/badge.svg)](https://github.com/V1GreenSummer/papilot-mbt/actions/workflows/ci.yml)
+
 
 **An AI facing LaTeX editor engine, written in MoonBit.**
 
