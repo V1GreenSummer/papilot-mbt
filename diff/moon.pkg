@@ -1,0 +1,4 @@
+import {
+  "moonbitlang/core/diff" @corelib,
+  "moonbitlang/core/debug",
+}

@@ -1,0 +1,25 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/jsonx"
+
+import {
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn field(@json.Json, String) -> @json.Json?
+
+pub fn items(@json.Json, String) -> Array[@json.Json]
+
+pub fn number(@json.Json, String) -> Int32
+
+pub fn real(@json.Json, String) -> Double
+
+pub fn text(@json.Json, String) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

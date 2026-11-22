@@ -1,0 +1,51 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/compare"
+
+import {
+  "V1GreenSummer/papilot/pdftext",
+  "V1GreenSummer/papilot/synctex",
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn compare(@pdftext.PdfText, @pdftext.PdfText) -> Array[Change]
+
+pub fn locate(@pdftext.PageText, @synctex.SynctexFile, Int32, @synctex.Rect) -> Located?
+
+pub fn locate_all(@pdftext.PdfText, @synctex.SynctexFile, Array[Change]) -> Array[Located?]
+
+pub fn source_of(Change, @synctex.SynctexFile) -> Array[@synctex.SourceLocation]
+
+// Errors
+
+// Types and methods
+#derive(Eq, @debug.Debug)
+pub struct Change {
+  page : Int32
+  rect : @synctex.Rect
+  old_text : String
+  new_text : String
+  old_words : Array[String]
+  new_words : Array[String]
+}
+pub fn Change::equal(Self, Self) -> Bool
+pub fn Change::from_json(@json.Json) -> Self?
+pub fn Change::new(Int32, @synctex.Rect, String, String) -> Self
+pub fn Change::not_equal(Self, Self) -> Bool
+pub fn Change::to_json(Self) -> @json.Json
+pub fn Change::to_repr(Self) -> @debug.Repr
+pub fn Change::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct Located {
+  source : @synctex.SourceLocation
+  rect : @synctex.Rect
+}
+pub fn Located::equal(Self, Self) -> Bool
+pub fn Located::not_equal(Self, Self) -> Bool
+pub fn Located::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

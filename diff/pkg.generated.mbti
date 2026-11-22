@@ -1,0 +1,100 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/diff"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn diff_lines(String, String) -> Array[LineDifference]
+
+pub fn diff_text(String, String) -> Array[Difference]
+
+pub fn diff_words(Array[Word], Array[Word]) -> Array[Difference]
+
+pub fn find_moves(Array[Word], Array[Word], min_substance? : Int32) -> Array[MovedPassage]
+
+pub fn join_words(Array[Word]) -> String
+
+pub fn split_lines(String) -> Array[String]
+
+pub fn tokenize_words(String) -> Array[Word]
+
+pub fn word_keys(Array[Word]) -> Array[String]
+
+// Errors
+
+// Types and methods
+#derive(Eq, @debug.Debug)
+pub(all) enum ChangeKind {
+  Removed
+  Added
+  Replaced
+}
+pub fn ChangeKind::equal(Self, Self) -> Bool
+pub fn ChangeKind::not_equal(Self, Self) -> Bool
+pub fn ChangeKind::to_repr(Self) -> @debug.Repr
+pub fn ChangeKind::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct Difference {
+  kind : ChangeKind
+  removed : Array[Word]
+  added : Array[Word]
+  old_start : Int32
+  new_start : Int32
+}
+pub fn Difference::added(Self) -> Array[Word]
+pub fn Difference::equal(Self, Self) -> Bool
+pub fn Difference::kind(Self) -> ChangeKind
+pub fn Difference::new_start(Self) -> Int32
+pub fn Difference::new_text(Self) -> String
+pub fn Difference::not_equal(Self, Self) -> Bool
+pub fn Difference::old_start(Self) -> Int32
+pub fn Difference::old_text(Self) -> String
+pub fn Difference::removed(Self) -> Array[Word]
+pub fn Difference::to_repr(Self) -> @debug.Repr
+pub fn Difference::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct LineDifference {
+  removed : Array[String]
+  added : Array[String]
+  old_start : Int32
+  new_start : Int32
+}
+pub fn LineDifference::equal(Self, Self) -> Bool
+pub fn LineDifference::not_equal(Self, Self) -> Bool
+pub fn LineDifference::to_repr(Self) -> @debug.Repr
+pub fn LineDifference::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct MovedPassage {
+  words : Array[Word]
+  old_start : Int32
+  new_start : Int32
+  length : Int32
+}
+pub fn MovedPassage::equal(Self, Self) -> Bool
+pub fn MovedPassage::not_equal(Self, Self) -> Bool
+pub fn MovedPassage::substance(Self) -> Int32
+pub fn MovedPassage::to_repr(Self) -> @debug.Repr
+pub fn MovedPassage::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct Word {
+  word : String
+  prefix : String
+  suffix : String
+}
+pub fn Word::equal(Self, Self) -> Bool
+pub fn Word::full(Self) -> String
+pub fn Word::is_word(Self) -> Bool
+pub fn Word::new(String, prefix? : String, suffix? : String) -> Self
+pub fn Word::not_equal(Self, Self) -> Bool
+pub fn Word::text(Self) -> String
+pub fn Word::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

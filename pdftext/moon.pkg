@@ -1,0 +1,12 @@
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/pdflite/page",
+  "moonbitlang/pdflite/core" @pdfcore,
+  "moonbitlang/pdflite",
+  "V1GreenSummer/papilot/synctex",
+  "moonbitlang/pdflite/syntax",
+}
+
+import {
+  "moonbitlang/core/encoding/utf8",
+} for "test"

@@ -1,0 +1,150 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/latex"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn parse(Source) -> Document
+
+pub fn parse_control(String) -> ControlWord?
+
+pub fn parse_text(String) -> Document
+
+pub fn tokenize(Source) -> Lexer
+
+pub fn tokenize_text(String) -> Lexer
+
+// Errors
+
+// Types and methods
+#derive(Eq, @debug.Debug)
+pub(all) enum ControlWord {
+  Word(String)
+  Symbol(Char)
+}
+pub fn ControlWord::equal(Self, Self) -> Bool
+pub fn ControlWord::name(Self) -> String
+pub fn ControlWord::not_equal(Self, Self) -> Bool
+pub fn ControlWord::to_repr(Self) -> @debug.Repr
+pub fn ControlWord::to_string(Self) -> String
+
+pub struct Document {
+  sections : Array[Section]
+  references : Array[Reference]
+  environments : Array[Environment]
+  preamble_span : Span
+  body_span : Span
+}
+pub fn Document::included_files(Self) -> Array[String]
+pub fn Document::label_at(Self, Int32) -> String?
+pub fn Document::references_of(Self, ReferenceKind) -> Array[Reference]
+pub fn Document::section_at(Self, Int32) -> Section?
+pub fn Document::section_label(Self, Section) -> String?
+pub fn Document::sections_at(Self, Int32) -> Array[Section]
+
+pub struct Environment {
+  name : String
+  begin_span : Span
+  end_span : Span
+  content_span : Span
+}
+
+pub struct Lexer {
+  source : Source
+  tokens : Array[Token]
+  group_end : Map[Int32, Int32]
+  group_start : Map[Int32, Int32]
+}
+pub fn Lexer::get(Self, Int32) -> Token?
+pub fn Lexer::group_content(Self, Int32) -> Span?
+pub fn Lexer::group_span(Self, Int32) -> Span?
+pub fn Lexer::length(Self) -> Int32
+pub fn Lexer::new(Source, Array[Token]) -> Self
+pub fn Lexer::text(Self, Span) -> String
+pub fn Lexer::to_string(Self) -> String
+pub fn Lexer::token_text(Self, Int32) -> String
+
+pub struct Reference {
+  kind : ReferenceKind
+  name : String
+  span : Span
+}
+
+#derive(Eq, @debug.Debug)
+pub(all) enum ReferenceKind {
+  Label
+  Ref
+  Cite
+  Include
+  Input
+  Subfile
+  Bibliography
+}
+pub fn ReferenceKind::equal(Self, Self) -> Bool
+pub fn ReferenceKind::not_equal(Self, Self) -> Bool
+pub fn ReferenceKind::to_repr(Self) -> @debug.Repr
+pub fn ReferenceKind::to_string(Self) -> String
+
+pub struct Section {
+  level : Int32
+  title : String
+  title_span : Span
+  span : Span
+  body_span : Span
+}
+pub fn Section::to_string(Self) -> String
+
+pub struct Source {
+  chars : Array[Char]
+}
+pub fn Source::get(Self, Int32) -> Char?
+pub fn Source::length(Self) -> Int32
+pub fn Source::new(String) -> Self
+pub fn Source::slice(Self, Int32, Int32) -> String
+pub fn Source::text(Self, Span) -> String
+pub fn Source::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct Span {
+  start : Int32
+  end : Int32
+}
+pub fn Span::contains(Self, Int32) -> Bool
+pub fn Span::contains_span(Self, Self) -> Bool
+pub fn Span::equal(Self, Self) -> Bool
+pub fn Span::intersect(Self, Self) -> Self?
+pub fn Span::is_empty(Self) -> Bool
+pub fn Span::len(Self) -> Int32
+pub fn Span::new(Int32, Int32) -> Self
+pub fn Span::not_equal(Self, Self) -> Bool
+pub fn Span::overlaps(Self, Self) -> Bool
+pub fn Span::shift(Self, Int32) -> Self
+pub fn Span::to_repr(Self) -> @debug.Repr
+pub fn Span::to_string(Self) -> String
+pub fn Span::union(Self, Self) -> Self
+
+pub struct Token {
+  kind : TokenKind
+  span : Span
+}
+pub fn Token::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub(all) enum TokenKind {
+  Text
+  ControlSequence
+  Comment
+  BeginGroup
+  EndGroup
+  MathShift
+}
+pub fn TokenKind::equal(Self, Self) -> Bool
+pub fn TokenKind::not_equal(Self, Self) -> Bool
+pub fn TokenKind::to_repr(Self) -> @debug.Repr
+pub fn TokenKind::to_string(Self) -> String
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,116 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/synctex"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn parse(String) -> SynctexFile
+
+pub fn parse_text(String) -> SynctexFile
+
+// Errors
+
+// Types and methods
+#derive(Eq, @debug.Debug)
+pub struct Node {
+  kind : NodeKind
+  tag : Int32
+  line : Int32
+  x : Double
+  y : Double
+  width : Double
+  height : Double
+}
+pub fn Node::equal(Self, Self) -> Bool
+pub fn Node::not_equal(Self, Self) -> Bool
+pub fn Node::to_repr(Self) -> @debug.Repr
+pub fn Node::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub(all) enum NodeKind {
+  HBox
+  VBox
+  Horizontal
+  Vertical
+  Rule
+  Kern
+  Glue
+  Current
+  Math
+}
+pub fn NodeKind::equal(Self, Self) -> Bool
+pub fn NodeKind::not_equal(Self, Self) -> Bool
+pub fn NodeKind::to_repr(Self) -> @debug.Repr
+pub fn NodeKind::to_string(Self) -> String
+
+pub struct Page {
+  number : Int32
+  nodes : Array[Node]
+}
+
+#derive(Eq, @debug.Debug)
+pub struct PageLine {
+  tag : Int32
+  line : Int32
+  v : Double
+  words : Int32
+}
+pub fn PageLine::equal(Self, Self) -> Bool
+pub fn PageLine::not_equal(Self, Self) -> Bool
+pub fn PageLine::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug)
+pub struct Rect {
+  x : Double
+  y : Double
+  width : Double
+  height : Double
+}
+pub fn Rect::area(Self) -> Double
+pub fn Rect::center_x(Self) -> Double
+pub fn Rect::center_y(Self) -> Double
+pub fn Rect::contains_point(Self, Double, Double) -> Bool
+pub fn Rect::equal(Self, Self) -> Bool
+pub fn Rect::new(Double, Double, Double, Double) -> Self
+pub fn Rect::not_equal(Self, Self) -> Bool
+pub fn Rect::overlaps(Self, Self) -> Bool
+pub fn Rect::right(Self) -> Double
+pub fn Rect::to_repr(Self) -> @debug.Repr
+pub fn Rect::top(Self) -> Double
+
+#derive(Eq, @debug.Debug)
+pub struct SourceLocation {
+  file : String
+  line : Int32
+}
+pub fn SourceLocation::equal(Self, Self) -> Bool
+pub fn SourceLocation::new(String, Int32) -> Self
+pub fn SourceLocation::not_equal(Self, Self) -> Bool
+pub fn SourceLocation::to_repr(Self) -> @debug.Repr
+pub fn SourceLocation::to_string(Self) -> String
+
+pub struct SynctexFile {
+  version : Int32
+  inputs : Map[Int32, String]
+  magnification : Double
+  unit : Double
+  x_offset : Double
+  y_offset : Double
+  pages : Array[Page]
+}
+pub fn SynctexFile::file_for_tag(Self, Int32) -> String?
+pub fn SynctexFile::input_tags(Self) -> Array[Int32]
+pub fn SynctexFile::lines_at(Self, Int32, Rect) -> Array[SourceLocation]
+pub fn SynctexFile::match_lines(Self, Int32, Array[Int32]) -> Array[Int32]
+pub fn SynctexFile::page_count(Self) -> Int32
+pub fn SynctexFile::page_lines(Self, Int32) -> Array[PageLine]
+pub fn SynctexFile::page_nodes(Self, Int32) -> Array[Node]
+pub fn SynctexFile::source_at(Self, Int32, Rect) -> SourceLocation?
+pub fn SynctexFile::source_of_line(Self, Int32, Int32) -> SourceLocation?
+pub fn SynctexFile::sources_at(Self, Int32, Rect) -> Array[SourceLocation]
+
+// Type aliases
+
+// Traits

@@ -1,0 +1,14 @@
+import {
+  "V1GreenSummer/papilot/build",
+  "V1GreenSummer/papilot/compare",
+  "V1GreenSummer/papilot/diff",
+  "V1GreenSummer/papilot/git",
+  "V1GreenSummer/papilot/journal",
+  "moonbitlang/core/json",
+  "V1GreenSummer/papilot/jsonx",
+  "V1GreenSummer/papilot/latex",
+  "V1GreenSummer/papilot/pdftext",
+  "V1GreenSummer/papilot/server",
+  "V1GreenSummer/papilot/synctex",
+  "V1GreenSummer/papilot/task",
+}

@@ -1,0 +1,100 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/pdftext"
+
+import {
+  "V1GreenSummer/papilot/synctex",
+  "moonbitlang/core/debug",
+  "moonbitlang/pdflite/core",
+}
+
+// Values
+pub fn extract(Bytes) -> PdfText raise @core.PdfError
+
+pub fn extract_from_bytes(Bytes) -> PdfText raise @core.PdfError
+
+pub fn words_slice(Array[Word], Int32, Int32) -> Array[Word]
+
+pub fn words_text(Array[Word]) -> String
+
+// Errors
+
+// Types and methods
+#derive(Eq, @debug.Debug)
+pub struct Glyph {
+  text : String
+  x : Double
+  y : Double
+  width : Double
+  height : Double
+}
+pub fn Glyph::equal(Self, Self) -> Bool
+pub fn Glyph::middle_y(Self) -> Double
+pub fn Glyph::new(String, Double, Double, Double, Double) -> Self
+pub fn Glyph::not_equal(Self, Self) -> Bool
+pub fn Glyph::right(Self) -> Double
+pub fn Glyph::to_repr(Self) -> @debug.Repr
+pub fn Glyph::to_string(Self) -> String
+
+pub struct Line {
+  text : String
+  x : Double
+  y : Double
+  width : Double
+  height : Double
+}
+
+#derive(Eq, @debug.Debug)
+pub struct PageSize {
+  width : Double
+  height : Double
+}
+pub fn PageSize::equal(Self, Self) -> Bool
+pub fn PageSize::not_equal(Self, Self) -> Bool
+pub fn PageSize::to_repr(Self) -> @debug.Repr
+pub fn PageSize::to_string(Self) -> String
+
+#derive(Eq, @debug.Debug)
+pub struct PageText {
+  number : Int32
+  width : Double
+  height : Double
+  glyphs : Array[Glyph]
+}
+pub fn PageText::equal(Self, Self) -> Bool
+pub fn PageText::glyphs_in(Self, Double, Double, Double, Double) -> Array[Glyph]
+pub fn PageText::lines(Self) -> Array[Line]
+pub fn PageText::new(Int32, Double, Double, Array[Glyph]) -> Self
+pub fn PageText::not_equal(Self, Self) -> Bool
+pub fn PageText::text(Self) -> String
+pub fn PageText::to_repr(Self) -> @debug.Repr
+pub fn PageText::words(Self) -> Array[Word]
+
+#derive(Eq, @debug.Debug)
+pub struct PdfText {
+  pages : Array[PageText]
+}
+pub fn PdfText::equal(Self, Self) -> Bool
+pub fn PdfText::new(Array[PageText]) -> Self
+pub fn PdfText::not_equal(Self, Self) -> Bool
+pub fn PdfText::page(Self, Int32) -> PageText?
+pub fn PdfText::page_count(Self) -> Int32
+pub fn PdfText::text(Self) -> String
+pub fn PdfText::to_repr(Self) -> @debug.Repr
+
+#derive(Eq, @debug.Debug)
+pub struct Word {
+  text : String
+  x : Double
+  y : Double
+  width : Double
+  height : Double
+}
+pub fn Word::equal(Self, Self) -> Bool
+pub fn Word::not_equal(Self, Self) -> Bool
+pub fn Word::rect(Self) -> @synctex.Rect
+pub fn Word::to_repr(Self) -> @debug.Repr
+pub fn Word::to_string(Self) -> String
+
+// Type aliases
+
+// Traits
