@@ -3,6 +3,7 @@ package "V1GreenSummer/papilot/server"
 
 import {
   "V1GreenSummer/papilot/journal",
+  "V1GreenSummer/papilot/pdftext",
   "V1GreenSummer/papilot/task",
   "moonbitlang/async/http",
   "moonbitlang/async/io",
@@ -30,6 +31,7 @@ pub struct App {
   store : Store
   tasks : Map[String, @task.Task]
   rounds : Map[String, @task.Round]
+  renders : Map[String, (@pdftext.PdfText, @pdftext.PdfText)]
 }
 pub async fn App::load(Self) -> Self
 pub fn App::new(String, String, @journal.Journal) -> Self

@@ -167,6 +167,19 @@ $ papilot serve --repo /path/to/paper --port 8765
 | `POST /tasks/:id/decisions` | Accept, reject or comment on a change. |
 | `POST /tasks/:id/undo` | Take a decision back. |
 
+
+### The review page
+
+The engine renders every page as vector SVG from the places of the glyphs,
+and serves a small review page — two renderings of the page, before and after,
+with the changes highlighted, and a button for each decision:
+
+```
+http://localhost:8765/                  → the index of the endpoints
+http://localhost:8765/tasks/t1/view     → the review page of the task
+http://localhost:8765/tasks/t1/page/1/after.svg  → one page, as vectors
+```
+
 ## The idea, in code
 
 Marking a place on the page and finding its source is three lines:

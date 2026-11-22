@@ -38,6 +38,10 @@ pub struct Glyph {
   y : Double
   width : Double
   height : Double
+  /// The font the glyph was set in.
+  font : String
+  /// The size the glyph was set at.
+  size : Double
 }
 
 ///|
@@ -47,8 +51,10 @@ pub fn Glyph::new(
   y : Double,
   width : Double,
   height : Double,
+  font~ : String = "",
+  size~ : Double = 0.0,
 ) -> Glyph {
-  { text, x, y, width, height, }
+  { text, x, y, width, height, font, size, }
 }
 
 ///|

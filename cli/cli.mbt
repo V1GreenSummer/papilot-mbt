@@ -226,9 +226,7 @@ async fn run_command(matches : @argparse.Matches) -> Unit {
       let name = option(sub, "task")
       let main = option(sub, "main")
       let engine = option(sub, "engine")
-      let round = @strconv.parse_int(option(sub, "round")) catch {
-        _ => 1
-      }
+      let round = @strconv.parse_int(option(sub, "round")) catch { _ => 1 }
       let worktrees = repo + "-tasks"
       let task = @task.create(repo, name, main, engine, worktrees, ".") catch {
         _ => None

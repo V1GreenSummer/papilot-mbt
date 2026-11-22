@@ -63,3 +63,9 @@ fn _keep_jsonx() -> String {
     "x",
   )
 }
+
+///|
+fn _keep_render() -> String {
+  let page = @pdftext.PageText::new(1, 612.0, 792.0, [])
+  @render.page_svg(page)
+}

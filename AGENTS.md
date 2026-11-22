@@ -20,6 +20,7 @@ pdftext  what the page says
 synctex  where the page comes from
 diff     what is different
 compare  the two together
+render   the page as vectors
 git      the work, kept apart
 build    the typeset result
 task     one round of one task
@@ -36,6 +37,7 @@ server   the interface
 | The SyncTeX reader | `synctex/` |
 | The PDF reader | `pdftext/` |
 | The PDF comparison and the locator | `compare/` |
+| The vector rendering of a page | `render/` |
 | Git worktrees and snapshots | `git/` |
 | The LaTeX build | `build/` |
 | Tasks, source edits and rounds | `task/` |

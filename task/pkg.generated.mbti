@@ -4,6 +4,7 @@ package "V1GreenSummer/papilot/task"
 import {
   "V1GreenSummer/papilot/compare",
   "V1GreenSummer/papilot/journal",
+  "V1GreenSummer/papilot/pdftext",
   "V1GreenSummer/papilot/synctex",
   "moonbitlang/core/debug",
   "moonbitlang/core/json",
@@ -80,6 +81,8 @@ pub fn PublishError::to_string(Self) -> String
 
 pub struct PublishResult {
   round : Round
+  before : @pdftext.PdfText
+  after : @pdftext.PdfText
   log : String
 }
 

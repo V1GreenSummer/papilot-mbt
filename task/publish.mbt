@@ -127,6 +127,10 @@ pub fn PublishError::to_string(self : PublishError) -> String {
 pub struct PublishResult {
   /// The round that was published.
   round : Round
+  /// The text of the accepted version, page by page.
+  before : @pdftext.PdfText
+  /// The text of the proposal, page by page.
+  after : @pdftext.PdfText
   /// The log of the compilation of the proposal.
   log : String
 }
@@ -223,6 +227,8 @@ pub async fn publish(
   }
   Ok(PublishResult::{
     round: Round::new(round, task_changes, edits),
+    before: old_text,
+    after: new_text,
     log: proposal.log,
   })
 }

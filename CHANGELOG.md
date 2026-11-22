@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.1.1] - 2026-11-22
+
+### Added
+
+- `render`: every page renders as a vector SVG, from the places of the
+  glyphs, with the fonts they were set in.
+- `GET /tasks/:id/view`: a review page with the before and after of the page,
+  the changes highlighted, and a button for each decision.
+- `GET /tasks/:id/page/:page/before.svg` and `.../after.svg`: one page as
+  vectors.
+- `GET /` lists the endpoints and the tasks.
+
+### Fixed
+
+- The area of a change was empty when the page held words the word tokenizer
+  would split differently (a `\section` heading, a formula): the comparison
+  now works on the words of the page directly.
+- `Content-Length` was counted in characters; HTTP counts bytes. An answer
+  with a non-ASCII character (a change of the paper can hold any) crashed the
+  server.
+
 ## [0.1.0] - 2026-11-22
 
 The first release of the engine.

@@ -22,6 +22,7 @@ import {
   "moonbitlang/async/process",
   "moonbitlang/core/encoding/utf8",
 } for "test"
+
 options(
-  "allow-experimental-packages": ["moonbitlang/core/compress/gzip"],
+  "allow-experimental-packages": [ "moonbitlang/core/compress/gzip" ],
 )

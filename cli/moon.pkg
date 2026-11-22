@@ -13,6 +13,7 @@ import {
   "V1GreenSummer/papilot/synctex",
   "moonbitlang/core/encoding/utf8",
 }
+
 options(
-  "allow-experimental-packages": ["moonbitlang/core/compress/gzip"],
+  "allow-experimental-packages": [ "moonbitlang/core/compress/gzip" ],
 )

@@ -93,7 +93,20 @@ pub fn extract(bytes : Bytes) -> PdfText raise @pdfcore.PdfError {
         @pdflite.PdfContentObject::PdfContentGlyphObject(_, _, extracted) =>
           if !extracted.is_empty() {
             let (x, y, width, height) = bbox_extent(entry.bounding_box)
-            glyphs.push(Glyph::{ text: extracted, x, y, width, height, })
+            let (font, size) = match entry.state {
+              @pdflite.PdfContentState::PdfContentStateGlyph(state) =>
+                (state.font, state.font_size)
+              _ => ("", 0.0)
+            }
+            glyphs.push(Glyph::{
+              text: extracted,
+              x,
+              y,
+              width,
+              height,
+              font,
+              size,
+            })
           }
         _ => ()
       }

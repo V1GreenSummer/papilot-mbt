@@ -1,0 +1,17 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/render"
+
+import {
+  "V1GreenSummer/papilot/pdftext",
+}
+
+// Values
+pub fn page_svg(@pdftext.PageText) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

@@ -13,6 +13,9 @@ pub struct App {
   tasks : Map[String, @task.Task]
   /// The last round of every task, by name.
   rounds : Map[String, @task.Round]
+  /// The text of the accepted version and of the proposal of the last
+  /// publish, by task name: what the viewer renders.
+  renders : Map[String, (@pdftext.PdfText, @pdftext.PdfText)]
 }
 
 ///|
@@ -22,7 +25,15 @@ pub fn App::new(
   journal : @journal.Journal,
 ) -> App {
   let store = Store::new(repo + "/.git/papilot")
-  { repo, worktrees, journal, store, tasks: Map([]), rounds: Map([]), }
+  {
+    repo,
+    worktrees,
+    journal,
+    store,
+    tasks: Map([]),
+    rounds: Map([]),
+    renders: Map([]),
+  }
 }
 
 ///|
@@ -37,6 +48,59 @@ pub async fn App::load(app : App) -> App {
 }
 
 ///|
+/// Send the index page of the engine.
+///
+/// The engine is a JSON interface, not a viewer; the page lists what there
+/// is, so that opening the address in a browser shows where to go instead of
+/// an error.
+async fn send_index(conn : @http.ServerConnection, app : App) -> Unit {
+  let mut tasks = ""
+  for (_, task) in app.tasks {
+    tasks += "<li><a href=\"/tasks/\{task.id}/view\">\{task.id}</a> " +
+      "(<a href=\"/tasks/\{task.id}/changes\">changes</a>)</li>\n"
+  }
+  if tasks == "" {
+    tasks = "<li>no tasks yet — POST /tasks " +
+      "with <code>{\"id\": \"my-task\", \"main\": \"main.tex\"}</code></li>\n"
+  }
+  let body = "<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\">" +
+    "<title>papilot</title>" +
+    "<style>body{font-family:sans-serif;max-width:42em;margin:2em auto;" +
+    "padding:0 1em;line-height:1.5}code{background:#f0f0f0;padding:0 .3em}" +
+    "td{padding:.2em .8em .2em 0}h1{font-size:1.4em}</style>" +
+    "</head><body>\n" +
+    "<h1>papilot — work on the PDF, not the .tex</h1>\n" +
+    "<p>Serving <code>\{app.repo}</code></p>\n" +
+    "<h2>Endpoints</h2>\n<table>\n" +
+    "<tr><td><code>GET <a href=\"/health\">/health</a></code></td>" +
+    "<td>is the engine alive?</td></tr>\n" +
+    "<tr><td><code>GET <a href=\"/tasks\">/tasks</a></code></td>" +
+    "<td>the tasks that exist</td></tr>\n" +
+    "<tr><td><code>POST /tasks</code></td>" +
+    "<td>create a task</td></tr>\n" +
+    "<tr><td><code>GET /tasks/:id</code></td>" +
+    "<td>the task and its last round</td></tr>\n" +
+    "<tr><td><code>POST /tasks/:id/publish</code></td>" +
+    "<td>compile both versions, report the changes</td></tr>\n" +
+    "<tr><td><code>GET /tasks/:id/changes</code></td>" +
+    "<td>the changes of the last round</td></tr>\n" +
+    "<tr><td><code>POST /tasks/:id/decisions</code></td>" +
+    "<td>accept, reject or comment on a change</td></tr>\n" +
+    "<tr><td><code>POST /tasks/:id/undo</code></td>" +
+    "<td>take a decision back</td></tr>\n" +
+    "</table>\n" +
+    "<h2>Tasks</h2>\n<ul>\n\{tasks}</ul>\n" +
+    "<p>Everything else answers with JSON.</p>\n" +
+    "</body></html>\n"
+  conn
+  ..send_response(200, "OK", extra_headers={
+    "Content-Type": "text/html; charset=utf-8",
+  })
+  ..write_string(body)
+  .end_response()
+}
+
+///|
 /// Send a JSON answer.
 async fn send_json(
   conn : @http.ServerConnection,
@@ -47,10 +111,178 @@ async fn send_json(
   conn
   ..send_response(code, "OK", extra_headers={
     "Content-Type": "application/json",
-    "Content-Length": body.length().to_string(),
+    "Content-Length": byte_length(body).to_string(),
   })
   ..write_string(body)
   .end_response()
+}
+
+///|
+/// The review page of a task.
+///
+/// Two vector renderings of the page, before and after, with the changes
+/// listed beside them. A change is highlighted on both sides; the buttons
+/// decide it. This is a small stand-in for the editor a user would build on
+/// the JSON interface.
+fn viewer_page(app : App, id : String) -> String? {
+  if !app.tasks.contains(id) {
+    return None
+  }
+  let fallback = (612.0, 792.0)
+  let (width, height) = match app.renders.get(id) {
+    Some((before, after)) =>
+      match after.page(1) {
+        Some(page) => (page.width, page.height)
+        None =>
+          match before.page(1) {
+            Some(page) => (page.width, page.height)
+            None => fallback
+          }
+      }
+    None => fallback
+  }
+  Some(viewer_shell(id, width, height))
+}
+
+///|
+/// The page itself, with the task name and the size of its pages in it.
+fn viewer_shell(id : String, width : Double, height : Double) -> String {
+  let w = width.to_string()
+  let h = height.to_string()
+  let page = "<div class=\"pane\"><div class=\"frame\">" +
+    "<img id=\"img-SIDE\" src=\"/tasks/\{id}/page/1/SIDE.svg\" " +
+    "onload=\"reshow()\">" +
+    "<div class=\"hl\" id=\"hl-SIDE\"></div></div>" +
+    "<div class=\"label\">SIDE</div></div>"
+  let before = page.replace(old="SIDE", new="before")
+  let after = page.replace(old="SIDE", new="after")
+  "<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\">" +
+  "<title>papilot — \{id}</title>\n" +
+  "<style>\n" +
+  "body{font-family:sans-serif;margin:0;display:flex;height:100vh}\n" +
+  "#side{width:20em;min-width:16em;padding:1em;overflow-y:auto;" +
+  "border-right:1px solid #ccc}\n" +
+  "#side h1{font-size:1.1em}\n" +
+  "#changes li{padding:.4em .2em;border-bottom:1px solid #eee;cursor:pointer}\n" +
+  "#changes .dec{color:#0a0;font-size:.85em}\n" +
+  "#changes .src{color:#888;font-size:.85em}\n" +
+  "#meta{margin:1em 0;font-size:.9em;min-height:3em}\n" +
+  "button{margin-right:.4em}\n" +
+  "#pages{flex:1;display:flex;gap:1em;padding:1em;overflow:auto}\n" +
+  ".pane{flex:1;min-width:0}\n" +
+  ".frame{position:relative;border:1px solid #999}\n" +
+  ".frame img{width:100%;display:block}\n" +
+  ".hl{display:none;position:absolute;border:2px solid #d33;" +
+  "background:rgba(255,60,60,.12);pointer-events:none}\n" +
+  ".label{text-align:center;color:#666;padding:.3em}\n" +
+  "</style></head><body>\n" +
+  "<div id=\"side\"><h1>task \{id}</h1>\n" +
+  "<button onclick=\"publish()\">Publish a round</button>\n" +
+  "<div id=\"meta\">publish a round to see the changes</div>\n" +
+  "<ol id=\"changes\"></ol></div>\n" +
+  "<div id=\"pages\">" +
+  before +
+  after +
+  "</div>\n" +
+  "<script>\n" +
+  "const TASK = '\{id}';\n" +
+  "const PAGE = { w: \{w}, h: \{h} };\n" +
+  "let changes = [];\n" +
+  "let round = 0;\n" +
+  "let current = -1;\n" +
+  "let page = 1;\n" +
+  "fetch('/tasks/\{id}/changes').then(r => r.json()).then(j => {\n" +
+  "  round = j.round;\n" +
+  "  changes = j.changes;\n" +
+  "  const list = document.getElementById('changes');\n" +
+  "  j.changes.forEach((c, i) => {\n" +
+  "    const li = document.createElement('li');\n" +
+  "    let html = '<b>#' + i + '</b> ' +\n" +
+  "      '<code>-' + c.old_text + ' +' + c.new_text + '</code><br>';\n" +
+  "    if (c.source) html += '<span class=\"src\">' +\n" +
+  "      c.source.file.split('/').pop() + ':' + c.source.line + '</span> ';\n" +
+  "    if (c.decision) html += '<span class=\"dec\">' + c.decision.kind + '</span>';\n" +
+  "    html += '<div><button onclick=\"event.stopPropagation();decide(' + i +\n" +
+  "      ',\\'accept\\')\">Accept</button>' +\n" +
+  "      '<button onclick=\"event.stopPropagation();decide(' + i +\n" +
+  "      ',\\'reject\\')\">Reject</button>' +\n" +
+  "      '<button onclick=\"event.stopPropagation();decide(' + i +\n" +
+  "      ',\\'comment\\')\">Comment</button></div>';\n" +
+  "    li.innerHTML = html;\n" +
+  "    li.onclick = () => show(i);\n" +
+  "    list.appendChild(li);\n" +
+  "  });\n" +
+  "  document.getElementById('meta').textContent =\n" +
+  "    'round ' + round + ', ' + j.changes.length + ' changes';\n" +
+  "  if (j.changes.length) show(0);\n" +
+  "});\n" +
+  "function show(i) {\n" +
+  "  current = i;\n" +
+  "  const c = changes[i];\n" +
+  "  if (!c) return;\n" +
+  "  if (c.page !== page) {\n" +
+  "    page = c.page;\n" +
+  "    document.getElementById('img-before').src =\n" +
+  "      '/tasks/\{id}/page/' + page + '/before.svg';\n" +
+  "    document.getElementById('img-after').src =\n" +
+  "      '/tasks/\{id}/page/' + page + '/after.svg';\n" +
+  "  }\n" +
+  "  ['before', 'after'].forEach(side => {\n" +
+  "    const img = document.getElementById('img-' + side);\n" +
+  "    const s = img.clientWidth / PAGE.w;\n" +
+  "    const hl = document.getElementById('hl-' + side);\n" +
+  "    hl.style.left = (c.rect.x * s) + 'px';\n" +
+  "    hl.style.top = ((PAGE.h - c.rect.y - c.rect.height) * s) + 'px';\n" +
+  "    hl.style.width = (c.rect.width * s) + 'px';\n" +
+  "    hl.style.height = (c.rect.height * s) + 'px';\n" +
+  "    hl.style.display = 'block';\n" +
+  "  });\n" +
+  "}\n" +
+  "function reshow() { if (current >= 0) show(current); }\n" +
+  "function decide(i, kind) {\n" +
+  "  const body = { round, change: i, decision: kind };\n" +
+  "  if (kind === 'comment') body.comment = prompt('comment') || '';\n" +
+  "  fetch('/tasks/\{id}/decisions', {\n" +
+  "    method: 'POST',\n" +
+  "    headers: { 'Content-Type': 'application/json' },\n" +
+  "    body: JSON.stringify(body)\n" +
+  "  }).then(() => location.reload());\n" +
+  "}\n" +
+  "function publish() {\n" +
+  "  fetch('/tasks/\{id}/publish', { method: 'POST' })\n" +
+  "    .then(() => location.reload());\n" +
+  "}\n" +
+  "</script>\n</body></html>\n"
+}
+
+///|
+/// Send an SVG answer.
+async fn send_svg(conn : @http.ServerConnection, svg : String) -> Unit {
+  conn
+  ..send_response(200, "OK", extra_headers={
+    "Content-Type": "image/svg+xml",
+    "Content-Length": byte_length(svg).to_string(),
+  })
+  ..write_string(svg)
+  .end_response()
+}
+
+///|
+/// Send an HTML answer.
+async fn send_html(conn : @http.ServerConnection, html : String) -> Unit {
+  conn
+  ..send_response(200, "OK", extra_headers={
+    "Content-Type": "text/html; charset=utf-8",
+    "Content-Length": byte_length(html).to_string(),
+  })
+  ..write_string(html)
+  .end_response()
+}
+
+///|
+/// The length of a text in bytes, as HTTP counts them.
+fn byte_length(text : String) -> Int32 {
+  @utf8.encode(text).length()
 }
 
 ///|
@@ -93,6 +325,7 @@ pub async fn handle(
 ) -> Unit {
   let parts = path_parts(request.path)
   match (request.meth, parts) {
+    (@http.RequestMethod::Get, []) => send_index(conn, app.val)
     (@http.RequestMethod::Get, ["health"]) =>
       send_json(conn, 200, Json::object({ "status": Json::string("ok") }))
     (@http.RequestMethod::Get, ["tasks"]) => {
@@ -181,6 +414,7 @@ pub async fn handle(
                 _ => result.round
               }
               app.val.rounds.set(id, carried)
+              app.val.renders.set(id, (result.before, result.after))
               app.val.store.save_round(id, carried)
               let _ = app.val.journal.append(
                 @journal.Entry::RoundPublished(
@@ -269,6 +503,24 @@ pub async fn handle(
         )
       }
     }
+    (@http.RequestMethod::Get, ["tasks", id, "page", page, side]) => {
+      let number = @strconv.parse_int(page) catch { _ => 0 }
+      match app.val.renders.get(id) {
+        Some((before, after)) => {
+          let text = if side == "after.svg" { after } else { before }
+          match text.page(number) {
+            Some(page_text) => send_svg(conn, @render.page_svg(page_text))
+            None => send_error(conn, 404, "there is no such page")
+          }
+        }
+        None => send_error(conn, 404, "publish a round first")
+      }
+    }
+    (@http.RequestMethod::Get, ["tasks", id, "view"]) =>
+      match viewer_page(app.val, id) {
+        Some(html) => send_html(conn, html)
+        None => send_error(conn, 404, "there is no task with that name")
+      }
     _ => send_error(conn, 404, "there is no such endpoint")
   }
 }

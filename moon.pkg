@@ -1,4 +1,5 @@
 import {
+  "V1GreenSummer/papilot/render",
   "V1GreenSummer/papilot/build",
   "V1GreenSummer/papilot/compare",
   "V1GreenSummer/papilot/diff",

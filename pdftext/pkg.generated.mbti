@@ -26,10 +26,12 @@ pub struct Glyph {
   y : Double
   width : Double
   height : Double
+  font : String
+  size : Double
 }
 pub fn Glyph::equal(Self, Self) -> Bool
 pub fn Glyph::middle_y(Self) -> Double
-pub fn Glyph::new(String, Double, Double, Double, Double) -> Self
+pub fn Glyph::new(String, Double, Double, Double, Double, font? : String, size? : Double) -> Self
 pub fn Glyph::not_equal(Self, Self) -> Bool
 pub fn Glyph::right(Self) -> Double
 pub fn Glyph::to_repr(Self) -> @debug.Repr
