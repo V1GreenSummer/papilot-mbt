@@ -1,0 +1,6 @@
+pkgtype(kind: "executable")
+
+import {
+  "V1GreenSummer/papilot/cli",
+  "moonbitlang/async",
+}

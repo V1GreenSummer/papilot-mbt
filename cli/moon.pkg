@@ -1,0 +1,15 @@
+import {
+  "V1GreenSummer/papilot/task",
+  "moonbitlang/core/argparse",
+  "V1GreenSummer/papilot/compare",
+  "moonbitlang/core/env",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/compress/gzip",
+  "V1GreenSummer/papilot/journal",
+  "V1GreenSummer/papilot/latex",
+  "V1GreenSummer/papilot/pdftext",
+  "V1GreenSummer/papilot/server",
+  "moonbitlang/core/string" @strconv,
+  "V1GreenSummer/papilot/synctex",
+  "moonbitlang/core/encoding/utf8",
+}

@@ -1,0 +1,51 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "V1GreenSummer/papilot/server"
+
+import {
+  "V1GreenSummer/papilot/journal",
+  "V1GreenSummer/papilot/task",
+  "moonbitlang/async/http",
+  "moonbitlang/async/io",
+  "moonbitlang/core/ref",
+}
+
+// Values
+pub const IDLE_HOURS : Int32 = 12
+
+pub async fn finish_unfinished(@ref.Ref[App]) -> Unit
+
+pub async fn handle(@ref.Ref[App], @http.Request, &@io.Reader, @http.ServerConnection) -> Unit
+
+pub fn same_origin(@http.Request) -> Bool
+
+pub async fn serve(App, Int32) -> Unit
+
+// Errors
+
+// Types and methods
+pub struct App {
+  repo : String
+  worktrees : String
+  journal : @journal.Journal
+  store : Store
+  tasks : Map[String, @task.Task]
+  rounds : Map[String, @task.Round]
+}
+pub async fn App::load(Self) -> Self
+pub fn App::new(String, String, @journal.Journal) -> Self
+
+pub struct Store {
+  folder : String
+}
+pub fn Store::folder(Self) -> String
+pub fn Store::new(String) -> Self
+pub async fn Store::rounds(Self) -> Map[String, @task.Round]
+pub fn Store::rounds_file(Self) -> String
+pub async fn Store::save_round(Self, String, @task.Round) -> Unit
+pub async fn Store::save_task(Self, @task.Task) -> Unit
+pub async fn Store::tasks(Self) -> Array[@task.Task]
+pub fn Store::tasks_file(Self) -> String
+
+// Type aliases
+
+// Traits
