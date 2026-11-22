@@ -167,6 +167,8 @@ pub fn diff_words(old : Array[Word], new : Array[Word]) -> Array[Difference] {
         while j < edits.length() {
           match edits[j] {
             @corelib.Edit::Insert(old_index~, new_index~, new_len~) => {
+              // The insertion stands at the same place of the old text.
+              let _ = old_index
               added = slice_words(new, new_index, new_index + new_len)
               new_cursor = new_index
               j = j + 1
@@ -367,6 +369,8 @@ pub fn diff_lines(old : String, new : String) -> Array[LineDifference] {
         while j < edits.length() {
           match edits[j] {
             @corelib.Edit::Insert(old_index~, new_index~, new_len~) => {
+              // The insertion stands at the same place of the old text.
+              let _ = old_index
               let mut m = 0
               while m < new_len {
                 added.push(new_lines[new_index + m])
